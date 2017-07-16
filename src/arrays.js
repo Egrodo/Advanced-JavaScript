@@ -15,21 +15,25 @@ const reduce = (elements, cb, memo) => {
   // Combine all elements into a single value going from left to right.
   // Elements will be passed one by one into `cb`.
   // `memo` is the starting value.  If `memo` is undefined then make `elements[0]` the initial value.
+
   // TODO come back to later
-  if (!memo) memo = elements.shift();
-  for (let i = 0; i < elements.length; i++) {
-    memo += elements[i];
-  }
-  return memo;
+  if (memo) memo = elements.shift();
+  elements.forEach((value) => {
+    return cb(memo + value);
+  });
 };
 
 const find = (elements, cb) => {
   // Look through each value in `elements` and pass each element to `cb`.
   // If `cb` returns `true` then return that element.
   // Return `undefined` if no elements pass the truth test.
-  for (let i = 0; i < elements.length; i++) {
-    if (cb(elements[i])) return elements[i];
-  }
+
+  // TODO come back to later.
+  elements.forEach((value, i) => {
+    if (cb(value)) {
+      return value;
+    }
+  });
   return 'undefined';
 };
 
@@ -48,18 +52,22 @@ const filter = (elements, cb) => {
 const flatten = (elements) => {
   // Flattens a nested array (the nesting can be to any depth).
   // Example: flatten([1, [2], [3, [[4]]]]); => [1, 2, 3, 4];
-  // let nArr = [];
-  // elements.forEach((value, i) => {
-  //   if (Array.isArray(this[i])) {
-  //     nArr = nArr.concat(this[i].flatten());
-  //   } else {
-  //     nArr.push(this[i]);
-  //   }
-  // });
-  // return nArr;
-  return elements.reduce((flat, toFlatten) => {
-    return flat.concat(Array.isArray(toFlatten) ? flatten(toFlatten) : toFlatten);
-  }, []);
+
+  // For each value in array,
+  // If value is an array, recurse into the value array.
+  const arr = [];
+  elements.forEach((value) => {
+    // First make base case.
+    if (Array.isArray(value)) { // If value is an array.
+      const nestedArray = flatten(value);
+      nestedArray.forEach((nestedValue) => {
+        arr.push(nestedValue);
+      });
+    } else { // Else if it's not, just add to new array.
+      arr.push(value);
+    }
+  });
+  return arr;
 };
 
 /* eslint-enable no-unused-vars, max-len */
