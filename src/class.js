@@ -10,12 +10,11 @@ class User {
     this.email = options.email;
     this.password = options.password;
   }
+  comparePasswords(pwStr) {
+    if (pwStr === this.password) return true;
+    return false;
+  }
 }
-
-User.prototype.comparePasswords = function (str) {
-  if (str === this.password) return true;
-  return false;
-};
 
 /* eslint-disable no-undef */ // Remove this comment once you write your classes.
 
@@ -31,19 +30,19 @@ User.prototype.comparePasswords = function (str) {
 class Animal {
   constructor(options) {
     this.age = options.age;
-    this.growOlder = function () {
-      return this.age += 1;
-    };
+  }
+  growOlder() {
+    return this.age += 1;
   }
 }
 
 class Cat extends Animal {
   constructor(options) {
-    super(options, options);
+    super(options);
     this.name = options.name;
-    this.meow = function () {
-      return `${this.name} meowed!`;
-    };
+  }
+  meow() {
+    return `${this.name} meowed!`;
   }
 }
 
