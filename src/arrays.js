@@ -16,24 +16,20 @@ const reduce = (elements, cb, memo) => {
   // Elements will be passed one by one into `cb`.
   // `memo` is the starting value.  If `memo` is undefined then make `elements[0]` the initial value.
 
-  // TODO come back to later
-  if (memo) memo = elements.shift();
+  if (!memo) memo = elements.shift();
   elements.forEach((value) => {
-    return cb(memo + value);
+    memo = cb(memo, value); // Running total.
   });
+  return memo;
 };
 
 const find = (elements, cb) => {
   // Look through each value in `elements` and pass each element to `cb`.
   // If `cb` returns `true` then return that element.
   // Return `undefined` if no elements pass the truth test.
-
-  // TODO come back to later.
-  elements.forEach((value, i) => {
-    if (cb(value)) {
-      return value;
-    }
-  });
+  for (let i = 0; i < elements.length; i++) {
+    if (cb(elements[i])) return elements[i];
+  }
   return 'undefined';
 };
 
@@ -52,9 +48,6 @@ const filter = (elements, cb) => {
 const flatten = (elements) => {
   // Flattens a nested array (the nesting can be to any depth).
   // Example: flatten([1, [2], [3, [[4]]]]); => [1, 2, 3, 4];
-
-  // For each value in array,
-  // If value is an array, recurse into the value array.
   const arr = [];
   elements.forEach((value) => {
     // First make base case.

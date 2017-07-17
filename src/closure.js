@@ -6,7 +6,7 @@ const counter = () => {
   // newCounter(); // 1
   // newCounter(); // 2
   let count = 0;
-  return () => {
+  return function () {
     return count += 1;
   };
 };
@@ -16,21 +16,23 @@ const counterFactory = () => {
   // `increment` should increment a counter variable in closure scope and return it.
   // `decrement` should decrement the counter variable and return it.
   let count = 0;
-  return { // Return an object that contains two methods
-    increment: () => (count += 1),
-    decrement: () => (count -= 1)
+  const obj = {};
+  obj.increment = () => {
+    return count += 1;
   };
+  obj.decrement = () => {
+    return count -= 1;
+  };
+  return obj;
 };
 
 const limitFunctionCallCount = (cb, n) => {
   // Should return a function that invokes `cb`.
   // The returned function should only allow `cb` to be invoked `n` times.
-  let count = 0;
-  return (...args) => { // Return a function, accept all parameters as one 'args' array.
-    if (count !== n) {
-      count++;
-      return cb(...args); // In the cb parameters, expand the 'args' spread operator again. and pass them to returned cb.
-    }
+  let callCount = 0;
+  return (...args) => {
+    callCount++;
+    if (n >= callCount) return cb(...args);
     return null;
   };
 };
@@ -42,16 +44,9 @@ const cacheFunction = (cb) => {
   // If the returned function is invoked with arguments that it has already seen
   // then it should return the cached result and not invoke `cb` again.
   // `cb` should only ever be invoked once for a given set of arguments.
-  // const cache = {};
-  // return function (arg) {
-  //   if (Object.keys(cache).includes(arg)) return cache[arg];
-  //   cache[arg] = cb(arg);
-  //   return cache[arg];
-  // };
-
-  const cache = {}; // A cache object should be kept in closure scope to keep track of all arguments that have been used to invoke the function.
+  const cache = {};
   return (input) => {
-    if (Object.prototype.hasOwnProperty.call(cache, input)) return cache[input];
+    if (Object.prototype.hasOwnProperty.apply(cache, [input])) return cache[input];
     cache[input] = cb(input);
     return cache[input];
   };
